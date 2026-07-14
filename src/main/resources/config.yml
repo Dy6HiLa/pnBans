@@ -1,0 +1,97 @@
+database:
+  type: SQLITE
+  sqlite:
+    file: punishments.db
+    connection-timeout-ms: 10000
+  mysql:
+    host: localhost
+    port: 3306
+    database: pnbans
+    username: root
+    password: change-me
+    parameters: useSSL=false&serverTimezone=UTC
+    pool-size: 10
+    connection-timeout-ms: 10000
+  mongodb:
+    uri: mongodb://localhost:27017
+    database: pnbans
+    collection: punishments
+
+# Rules are selected by Vault primary group. Set 0s for no cooldown/limit.
+moderation-limits:
+  default:
+    ban: { cooldown: 0s, max-duration: 0s }
+    mute: { cooldown: 0s, max-duration: 0s }
+    warn: { cooldown: 0s, max-duration: 0s }
+  vault-groups:
+    moder:
+      ban: { cooldown: 60s, max-duration: 30d }
+      mute: { cooldown: 30s, max-duration: 30d }
+      warn: { cooldown: 10s, max-duration: 30d }
+
+mute-bypass-permission: pnbans.mute.bypass
+effects:
+  mute-issued-sound: BLOCK_NOTE_BLOCK_BASS
+  mute-attempt-sound: BLOCK_NOTE_BLOCK_DIDGERIDOO
+  ban-sequence-start-sound: ENTITY_WITHER_SPAWN
+  ban-sequence-end-sound: ENTITY_LIGHTNING_BOLT_THUNDER
+  ban-sequence:
+    enabled: true
+
+escalation:
+  enabled: false
+  warning-count: 3
+  mute-duration: 1d
+  reason: 'Автоматический мут за предупреждения'
+
+# Причины для третьего аргумента: /ban <ник> <срок> <код>.
+reason-templates:
+  ban:
+    '3.1': '3.1 - Реклама сторонних проектов'
+# Эти коды предлагаются в третьем аргументе причины: /ban <ник> <срок> <код>.
+punishment-presets:
+  ban:
+    '1.1': { duration: 30d, reason: '1.1 - Использование читов' }
+    '1.2': { duration: 14d, reason: '1.2 - Использование багов сервера' }
+  mute:
+    '2.1': { duration: 1d, reason: '2.1 - Оскорбления игроков' }
+    '2.2': { duration: 2h, reason: '2.2 - Спам или флуд' }
+
+dupeip:
+  enabled: true
+  alert-permission: pnbans.dupeip.alert
+  bypass-permission: pnbans.dupeip.bypass
+  alert-console: true
+  # Одинаковая пара аккаунтов не спамит повторным алертом, если риск не вырос.
+  alert-cooldown-seconds: 300
+  # Эти IP и ники сохраняются в истории, но не создают связи и алерты.
+  ignored-ips: []
+  ignored-players: []
+  same-ip-limit: 30
+  recent-scan-limit: 300
+  ip-history-limit: 30
+  # На входе достаточно проверить самые сильные связи; ручной GUI показывает max-matches.
+  alert-max-matches: 20
+  max-matches: 100
+  name-similarity-threshold: 0.82
+  detection:
+    # Это балл риска, а не вероятность и не автоматическое доказательство обхода бана.
+    alert-risk-score: 50
+    # Базовые совпадения уведомляют персонал независимо от risk score.
+    alert-on-same-ip: true
+    alert-on-similar-name: true
+    # Новый UUID, появившийся на том же IP вскоре после бана, получает главный сигнал обхода.
+    ban-evasion-window-minutes: 30
+    quick-switch-window-minutes: 10
+    new-account-window-minutes: 15
+    history-limit: 200
+  # Для определения страны публичный IP отправляется на https://ipwho.is.
+  # Локальные адреса наружу не отправляются. Результат хранится в памяти по cache-hours.
+  geoip:
+    enabled: true
+    cache-hours: 24
+    max-cache-entries: 5000
+    # Ограничивает блокирующие HTTP-запросы при одной проверке; остальные берутся только из кэша.
+    max-lookups-per-analysis: 10
+    connect-timeout-ms: 3000
+    read-timeout-ms: 3000

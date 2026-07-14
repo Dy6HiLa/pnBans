@@ -1,0 +1,56 @@
+name: pnBans
+version: '${version}'
+main: ru.privatenull.pnbans.PnBansPlugin
+api-version: '1.21'
+authors: [privatenull]
+description: Moderation system with audit history and DupeIP checks
+commands:
+  ban:
+    usage: /ban <ник> <время> <правило|причина> [-s]
+    permission: pnbans.ban
+  unban:
+    usage: /unban <ник>
+    permission: pnbans.unban
+  ipban:
+    usage: /ipban <ник|ip> <время> <причина> [-s]
+    permission: pnbans.ban.ip
+  unipban:
+    usage: /unipban <ник|ip>
+    permission: pnbans.unban.ip
+  mute:
+    usage: /mute <ник> <время> <правило|причина> [-s]
+    permission: pnbans.mute
+  unmute:
+    usage: /unmute <ник>
+    permission: pnbans.unmute
+  warn:
+    usage: /warn <ник> <время> <правило|причина> [-s]
+    permission: pnbans.warn
+  unwarn:
+    usage: /unwarn <ник>
+    permission: pnbans.unwarn
+  history:
+    usage: /history <ник> | /history staff [модератор]
+    permission: pnbans.history
+  dupeip:
+    usage: /dupeip <ник>
+    permission: pnbans.dupeip
+  pnbans:
+    usage: /pnbans reload
+permissions:
+  pnbans.ban: { default: op }
+  pnbans.unban: { default: op }
+  pnbans.ban.ip: { default: op }
+  pnbans.unban.ip: { default: op }
+  pnbans.mute: { default: op }
+  pnbans.unmute: { default: op }
+  pnbans.warn: { default: op }
+  pnbans.unwarn: { default: op }
+  pnbans.history: { default: op }
+  pnbans.dupeip: { default: op }
+  pnbans.dupeip.alert: { default: op }
+  pnbans.dupeip.bypass: { default: false }
+  pnbans.admin: { default: op }
+  pnbans.notify: { default: op }
+  pnbans.exempt: { default: false }
+  pnbans.mute.bypass: { default: false }
